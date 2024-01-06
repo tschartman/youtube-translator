@@ -1,6 +1,10 @@
 import express from 'express';
+import morgan from "morgan";
 import dotenv from 'dotenv';
+import swaggerUi from "swagger-ui-express";
 import { getSubtitles } from './parser';
+import {Post, Route} from "tsoa";
+import CaptionsController from './controller';
 
 dotenv.config();
 
@@ -9,21 +13,31 @@ const port = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(morgan("tiny"));
+
+app.use(
+  "/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(undefined, {
+    swaggerOptions: {
+      url: "/swagger.json",
+    },
+  })
+);
 
 app.get('/', (req, res) => {
   return res.send('Welcome')
 })
   
 app.post('/captions', async (req, res) => {
-
   const {youtubeUrl} = req.body;
   if (!youtubeUrl) {
     res.status(400).send('youtubeUrl is required');
   } else {
-    const data = await getSubtitles({videoID: youtubeUrl, lang: 'en'})
-    const script = data.map((obj: { text: string; }) => {
-      return obj.text
-    }).join(" ")
+    const controller = new CaptionsController();
+    const script = controller.getCaptions(youtubeUrl); 
+
     res.status(200).send(script)
   }
 });

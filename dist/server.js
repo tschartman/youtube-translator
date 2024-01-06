@@ -13,13 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const parser_1 = require("./parser");
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const controller_1 = __importDefault(require("./controller"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.static("public"));
+app.use((0, morgan_1.default)("tiny"));
+app.use("/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(undefined, {
+    swaggerOptions: {
+        url: "/swagger.json",
+    },
+}));
 app.get('/', (req, res) => {
     return res.send('Welcome');
 });
@@ -29,10 +38,8 @@ app.post('/captions', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(400).send('youtubeUrl is required');
     }
     else {
-        const data = yield (0, parser_1.getSubtitles)({ videoID: youtubeUrl, lang: 'en' });
-        const script = data.map((obj) => {
-            return obj.text;
-        }).join(" ");
+        const controller = new controller_1.default();
+        const script = controller.getCaptions(youtubeUrl);
         res.status(200).send(script);
     }
 }));
