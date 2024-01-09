@@ -2,11 +2,12 @@ import express from 'express';
 import morgan from "morgan";
 import dotenv from 'dotenv';
 import swaggerUi from "swagger-ui-express";
-import { getSubtitles } from './parser';
-import {Post, Route} from "tsoa";
-import CaptionsController from './controller';
+import router from './routes';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
+
+const JWT_SECRET:string = process.env.JWT_SECRET as string;
 
 const app = express();
 const port = 3000;
@@ -29,18 +30,8 @@ app.use(
 app.get('/', (req, res) => {
   return res.send('Welcome')
 })
-  
-app.post('/captions', async (req, res) => {
-    const controller = new CaptionsController();
 
-    try {
-      const script = await controller.getCaptions(req.body);
-      res.status(200).send(script)
-    } catch (err) {
-      res.status(200).send("Could not find the script for that video")
-    }
-
-});
+app.use(router)
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
