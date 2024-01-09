@@ -18,6 +18,32 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"CaptionRequest": {
+				"properties": {
+					"url": {
+						"type": "string"
+					},
+					"lang": {
+						"anyOf": [
+							{},
+							{
+								"type": "string",
+								"enum": [
+									"en",
+									"de",
+									"fr"
+								]
+							}
+						]
+					}
+				},
+				"required": [
+					"url",
+					"lang"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -53,7 +79,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"type": "string"
+								"$ref": "#/components/schemas/CaptionRequest"
 							}
 						}
 					}

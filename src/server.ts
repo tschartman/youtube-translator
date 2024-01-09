@@ -31,15 +31,10 @@ app.get('/', (req, res) => {
 })
   
 app.post('/captions', async (req, res) => {
-  const {youtubeUrl} = req.body;
-  if (!youtubeUrl) {
-    res.status(400).send('youtubeUrl is required');
-  } else {
     const controller = new CaptionsController();
-    const script = controller.getCaptions(youtubeUrl); 
+    const script = controller.getCaptions(req.body); 
 
     res.status(200).send(script)
-  }
 });
 
 app.listen(port, () => {
