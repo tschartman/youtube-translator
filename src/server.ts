@@ -32,9 +32,14 @@ app.get('/', (req, res) => {
   
 app.post('/captions', async (req, res) => {
     const controller = new CaptionsController();
-    const script = controller.getCaptions(req.body); 
 
-    res.status(200).send(script)
+    try {
+      const script = await controller.getCaptions(req.body);
+      res.status(200).send(script)
+    } catch (err) {
+      res.status(200).send("Could not find the script for that video")
+    }
+
 });
 
 app.listen(port, () => {
