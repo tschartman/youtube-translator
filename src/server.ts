@@ -3,7 +3,7 @@ import morgan from "morgan";
 import dotenv from 'dotenv';
 import swaggerUi from "swagger-ui-express";
 import router from './routes';
-import jwt from 'jsonwebtoken';
+import path from 'path';
 
 dotenv.config();
 
@@ -30,6 +30,11 @@ app.use(
 app.get('/', (req, res) => {
   return res.send('Welcome')
 })
+
+app.get('/privacy', function(request, response){
+  const htmlFile = path.join(__dirname, '/PrivatePolicy.html');
+  response.sendFile(htmlFile)
+});
 
 app.use(router)
 
