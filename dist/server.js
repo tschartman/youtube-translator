@@ -33,15 +33,9 @@ app.get('/', (req, res) => {
     return res.send('Welcome');
 });
 app.post('/captions', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { youtubeUrl } = req.body;
-    if (!youtubeUrl) {
-        res.status(400).send('youtubeUrl is required');
-    }
-    else {
-        const controller = new controller_1.default();
-        const script = controller.getCaptions(youtubeUrl);
-        res.status(200).send(script);
-    }
+    const controller = new controller_1.default();
+    const script = controller.getCaptions(req.body);
+    res.status(200).send(script);
 }));
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

@@ -24,15 +24,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const tsoa_1 = require("tsoa");
 const parser_1 = require("./parser");
 let CaptionsController = class CaptionsController {
-    getCaptions(youtubeUrl) {
+    getCaptions(request) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield (0, parser_1.getSubtitles)({ videoID: youtubeUrl, lang: 'en' });
+            const data = yield (0, parser_1.getSubtitles)({ videoID: request.url, lang: request.lang });
             const script = data.map((obj) => {
                 return obj.text;
             }).join(" ");
-            return {
-                script
-            };
+            return script;
         });
     }
 };
@@ -40,7 +38,7 @@ __decorate([
     (0, tsoa_1.Post)("/"),
     __param(0, (0, tsoa_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], CaptionsController.prototype, "getCaptions", null);
 CaptionsController = __decorate([
